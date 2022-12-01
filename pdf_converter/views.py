@@ -29,23 +29,45 @@ def convert(request):
     return render(request, 'download.html')
 
 
+def normalize_name(filename: str):
+    characters = {
+        '/': '\\',
+        '-': '_',
+        'é': 'e',
+        'î': 'i'
+    }
+    filename = "".join(lettre for lettre in filename if lettre.isalnum())
+    for key, value in characters.items():
+        filename.replace(key, value)
+
+    return filename
+
+
 def upload(request):
     pdf_file = request.FILES['pdf_file']
     # create a new instance of FileSystemStorage
     fs = FileSystemStorage()
     # the fileurl variable now contains the url to the file. This can be used to serve the file when needed.
-    print(pdf_file)
-    docx_file = pdf_file.name + str(datetime.now()) + '.docx'
-    pdf_file = fs.save('pdf/' + pdf_file.name, pdf_file)
+    docx_file = pdf_file.name.split('.')[0]
+    docx_file = normalize_name(docx_file)
+    pdf_name = pdf_file.name[:-3]
+    pdf_file = fs.save('pdf/' + normalize_name(pdf_name)+'.pdf', pdf_file)
     pdf_file_url = str(settings.BASE_DIR) + fs.url(pdf_file)
-    print(pdf_file)
-    docx_file = pdf_file_url + '.docx'
-    parse(pdf_file_url, docx_file)
+    # print(pdf_file_url, str(settings.BASE_DIR))
+    docx_file = str(settings.BASE_DIR) + '/media/docs/' + normalize_name(docx_file) + '.docx'
+    pdf_file_url.replace('/', '\\')
+    try:
+        parse(pdf_file_url, docx_file)
+    except Exception:
+        print("Exception")
+        return render(request, 'download.html', {"message": "Veuillez renomez votre fichier"})
+    print(docx_file, pdf_file_url)
+    docx_file = docx_file.replace('/', '\\')
     return render(request, 'download.html', {'name': pdf_file_url, 'docx_file': docx_file})
 
 
-def conversion(request, docx_file_url: str):
-    with open(docx_file_url, "rb") as docx_file:
-        result = convert_to_html(docx_file)
+def conversion(request, docxfile: str):
+    with open(docxfile, "rb") as docxfile:
+        result = convert_to_html(docxfile)
         html = result.value  # The generated HTML
-    return {"html": html}
+    return render(request, 'html_file.html', {"html": html})

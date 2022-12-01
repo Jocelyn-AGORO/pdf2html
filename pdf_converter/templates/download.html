@@ -12,7 +12,22 @@
 </head>
 <body>
 <div>
-    <a class="download" href="{{ docx_file_url }}">Télécharger le HTML </a>
+    {% if message == None %}
+    <a class="download" href="{{ docx_file }}">Télécharger le HTML </a>
+    <div>
+        {{ docx_file }}
+    </div>
+    <form action="{% url 'conversion' docxfile=docx_file %}" method="post" >
+        {% csrf_token %}
+        <button type="submit">
+             Convertir
+        </button>
+    </form>
+    {% else %}
+        <div>
+          {{ message }}
+        </div>
+    {% endif %}
 </div>
 </body>
 </html>

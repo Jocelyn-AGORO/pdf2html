@@ -22,7 +22,7 @@ from pdf_converter.api import api
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pdf_converter.urls')),
-    # path('api/', api.urls)
+    path('api/', api.urls)
 ]
 
 if settings.DEBUG:
