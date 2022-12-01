@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF to HTML</title>
+    <style>
+        .header {
+            height: 10vh;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .converter{
+            width: 100%;
+            font-size: 10vh;
+            text-align:center;
+        }
+        .uploader-wrapper {
+          position: relative;
+          overflow: hidden;
+          margin-top: 20px;
+        }
+
+        .buttons{
+            display: grid;
+            place-items: center;
+            gap: 15px;
+            grid-template-columns: 1fr;
+            grid-template-rows: 50px 50px;
+        }
+
+        .uploader {
+          border: 2px solid blue;
+          color: white;
+          background-color: blue;
+          padding: 8px 20px;
+          border-radius: 15px;
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .convert {
+          border: 2px solid greenyellow;
+          color: white;
+          background-color: green;
+          padding: 8px 20px;
+          border-radius: 15px;
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .uploader-wrapper input[type=file] {
+          font-size: 100px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<div>
+
+</div>
+<div>
+
+</div  >
+    <div class="converter" >
+        Convertissez vos PDF en HTML
+    </div>
+    <div>
+        <form class="buttons" action="{% url 'upload' %}" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <input type="file" name="pdf_file" accept="application/pdf">
+            <button class="convert" type="submit">Téléverser</button>
+        </form>
+    </div>
+</body>
+</html>
